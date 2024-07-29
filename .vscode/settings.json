@@ -11,6 +11,9 @@
     "code-runner.executorMap": {
       "python": "clear ; python -u"
     },
+    "emmet.includeLanguages": {
+     "django-html": "html",
+    },
     "code-runner.runInTerminal": true,
     "code-runner.ignoreSelection": true,
     "editor.fontFamily": "'Fira Code', Consolas, 'Dank Mono', 'Source Code Pro', 'Fira Code', Menlo, 'Inconsolata', 'Droid Sans Mono', 'DejaVu Sans Mono', 'Ubuntu Mono', 'Courier New', Courier, Monaco, monospace",
