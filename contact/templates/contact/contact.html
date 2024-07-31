@@ -11,6 +11,7 @@
         <p> <strong>Created Date: {{ contact.created_date }}</strong> </p>
         <p> <strong>Description: {{ contact.description }}</strong> </p>
         <p> <strong>Category: {{ contact.category.name }}</strong> </p>
+        <p> <strong>Owner: {{ contact.owner }}</strong> </p>
 
         {% if contact.image %}
         <p>
@@ -18,20 +19,23 @@
         </p>    
         {% endif %}
 
+        {% if request.user == contact.owner %}
+            <div class="contact-links">
+                <a class="btn btn-link" href="{% url "contact:update" contact.id %}">Update</a>
+                <!-- form e botão para deletar -->
+                <form action="{% url "contact:delete" contact.id %}" method="POST">
+                    {% csrf_token %}
+                    {% if confirmation == 'no' %}
+                        <input type="hidden" name='confirmation' value="yes">
+                        <button class="btn btn-link btn-delete" type="submit">Confirma?</button>
+                    {% else %}
+                        <button class="btn btn-link btn-delete" type="submit">Deletar</button>
+                    {% endif %}
+                </form>
+            </div>
+        {% endif %}
+
         <!-- Botão para atualizar e deletar -->
-        <div class="contact-links">
-            <a class="btn btn-link" href="{% url "contact:update" contact.id %}">Update</a>
-            <!-- form e botão para deletar -->
-            <form action="{% url "contact:delete" contact.id %}" method="POST">
-                {% csrf_token %}
-                {% if confirmation == 'no' %}
-                    <input type="hidden" name='confirmation' value="yes">
-                    <button class="btn btn-link btn-delete" type="submit">Confirma?</button>
-                {% else %}
-                    <button class="btn btn-link btn-delete" type="submit">Deletar</button>
-                {% endif %}
-            </form>
-        </div>
 
     </div>
 {% endblock content %}

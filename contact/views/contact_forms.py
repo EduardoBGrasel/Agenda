@@ -5,9 +5,11 @@ from contact.models import Contact
 from django.db.models import Q # fazer o "ou" na busca
 from contact.forms import ContactForm
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
 
 
 # Create your views here.
+@login_required(login_url='contact:login')
 def create(request):
     form_action = reverse('contact:create')
 
@@ -19,7 +21,9 @@ def create(request):
         }
 
         if form.is_valid(): # verifica se o formulario é válido
-            contact = form.save() # salva o form no banco de dados
+            contact = form.save(commit=False) # salva o form no banco de dados
+            contact.owner = request.user
+            contact.save()
             return redirect('contact:update', contact_id=contact.pk)
 
         return render(
@@ -37,9 +41,9 @@ def create(request):
             context=context
         )
 
-
+@login_required(login_url='contact:login')
 def update(request, contact_id):
-    contact = get_object_or_404(Contact, pk = contact_id, show=True)
+    contact = get_object_or_404(Contact, pk = contact_id, show=True, owner=request.user)
     form_action = reverse('contact:update', args=(contact_id,))
 
     if (request.method == 'POST'):
@@ -68,8 +72,9 @@ def update(request, contact_id):
             context=context
         )
 
+@login_required(login_url='contact:login')
 def delete(request, contact_id):
-    contact = get_object_or_404(Contact, pk = contact_id, show=True)
+    contact = get_object_or_404(Contact, pk = contact_id, show=True, owner=request.user)
     # contact.delete()
     # return redirect('contact:index')
     confirmation = request.POST.get('confirmation', 'no')
